@@ -21,9 +21,9 @@ namespace Vidley.Dtos
 
         public byte MembershipTypeId { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}",
-            ApplyFormatInEditMode = true)]
-        [Min18YearsIFAMember]
+   //     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}",
+   //         ApplyFormatInEditMode = true)]
+   //     [Min18YearsIFAMember]
         public DateTime? BirthDate { get; set; }
 
     }

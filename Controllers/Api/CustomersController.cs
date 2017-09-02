@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Vidley.Dtos;
 using Vidley.Models;
@@ -30,14 +29,14 @@ namespace Vidley.Controllers.Api
         // similar to details
         //
         //public Customer GetCustomer(int Id) -- THIS WAS BEFORE MAPPING
-        public CustomerDto GetCustomer(int Id)
+        public IHttpActionResult GetCustomer(int Id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == Id);
             if (customer == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
             }
-            return Mapper.Map<Customer,CustomerDto>(customer);
+            return Ok( Mapper.Map<Customer,CustomerDto>(customer));
             //return customerDto;
         }
 
@@ -45,10 +44,10 @@ namespace Vidley.Controllers.Api
         // similar to Save
         [HttpPost]
         //public Customer PostCustomer(Customer customerDto)
-        public CustomerDto CreateCustomer(CustomerDto customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();            
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
             _context.SaveChanges();
@@ -56,49 +55,44 @@ namespace Vidley.Controllers.Api
             //return customerDto;
 
             customerDto.Id = customer.Id;
-            return customerDto;
+            return Created(new Uri(Request.RequestUri + "/" + customer.Id), customerDto );
         }
 
         // PUT / api/customers/1
-        // simliar to 
+        // simliar to edit
         [HttpPut]
         //        public void UpdateCustomer(int id, Customer customerDto)
 
-        public void UpdateCustomer(int id, CustomerDto customerDto)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
-            
+
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
             var customerIndb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
 
             if (customerIndb == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-
+                return NotFound();
             }
             Mapper.Map(customerDto, customerIndb);
-            /*customerIndb.Name = customer.Name;
-            customerIndb.BirthDate = customer.BirthDate;
-            customerIndb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            customerIndb.BirthDate = customer.BirthDate;
-            customerIndb.MembershipTypeId = customer.MembershipTypeId;*/
-            // use automapper tool to automatically map the filelds
+  
             _context.SaveChanges();
+            return Ok();
 
         }
         //Delete /api/customers/1
         [HttpDelete]
-        public void DeleteCustomer(int id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
             var customerIndb = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (customerIndb == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-
+                return NotFound();
             }
             _context.Customers.Remove(customerIndb);
             _context.SaveChanges();
+            return Ok();
         }
     }
 }
