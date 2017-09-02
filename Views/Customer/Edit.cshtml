@@ -1,0 +1,47 @@
+﻿@model Vidley.ViewModels.CustomerFormViewModel
+
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Customer</h2>
+@using (Html.BeginForm("Create", "Customerss"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customers.Name)
+        @Html.TextBoxFor(m => m.Customers.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customers.BirthDate)
+        @Html.TextBoxFor(m => m.Customers.BirthDate, new { @class = "form-control" })
+    </div>
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(m => m.Customers.IsSubscribedToNewsletter) Subscribed To NewsLetter
+        </label>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Customers.MembershipTypeId)
+        @Html.DropDownListFor(m => m.Customers.MembershipTypeId,
+            new SelectList(Model.MembershipTypes, "Id", "MembershipName"),
+            "Select MemberShip Type", new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+
+
+
+
+}
+
+@*
+    <input type="text" name="Name" />
+    <input type="submit" value="submit" />
+*@
+@*
+    @Html.DropDownListFor(m => m.Customers.MembershipTypeId,new SelectList(Model.MembershipTypes,"Id", "Name"),
+    "Select MemberShip Type",new{@class= "form-control"} )
+
+*@

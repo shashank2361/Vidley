@@ -1,0 +1,52 @@
+﻿@model Vidley.Models.Customer
+ 
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Customers</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+
+            @Html.ActionLink(Model.Name , "Edit", "Customer", new { id = Model.Id }, null) 
+            <p>
+                @Html.DisplayFor(model => model.MembershipType.MembershipName)
+
+            </p>
+            
+        </dd>
+        <dd>
+            <dt>@Html.DisplayNameFor(model => model.City)</dt>
+            <dd>
+                @Html.DisplayFor(model => model.City)
+            </dd>
+        </dd>
+        
+            @if (Model.BirthDate.HasValue == true)
+            {
+                    <dt>@Html.DisplayNameFor(model => model.BirthDate)</dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.BirthDate)
+                    </dd>
+                    
+            
+            }
+
+        </dl>
+
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit","Customer", new { id = Model.Id },null) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+@*            @Html.DisplayFor(model => model.Name)*@
