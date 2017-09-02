@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using AutoMapper;
+using Vidley.Dtos;
 using Vidley.Models;
+using AutoMapper;
  
  
 using Vidley.ViewModels;
@@ -20,54 +23,57 @@ namespace Vidley.Controllers.Api
 
         }
 
+        // here added delegates who do the mapping
 
         // Get /api/movies/
-        public IEnumerable<Movie> GetMovies()
+        public IEnumerable<MovieDto> GetMovies()
         {
-            var movies = _context.Movies.ToList();
+            var movies = _context.Movies.ToList().Select(Mapper.Map<Movie, MovieDto>);
             return movies;
 
         }
 
         // Get /api/Movies/1  
-        public Movie GetMovie(int Id)
+        public MovieDto GetMovie(int Id)
         {
 
             var movie = _context.Movies.SingleOrDefault(m => m.Id == Id);
             if (movie == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            return movie;
+            return Mapper.Map<Movie , MovieDto>(movie);
         }
 
         // Post /api/Movies/
         [HttpPost]
-        public Movie CreateMovies(Movie movie)
+        public MovieDto CreateMovies(MovieDto movieDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
+            var movie = Mapper.Map<MovieDto, Movie>(movieDto);
             _context.Movies.Add(movie);
             _context.SaveChanges();
-            return movie;
+            movieDto.Id = movie.Id;
+            return movieDto;
         }
 
-        // put /api/Movies/1
+        // put /api/Movies/1  -- this could be made void too
         [HttpPut]
-        public Movie UpdateMovie(int Id, Movie movie)
+        public MovieDto UpdateMovie(int Id, MovieDto movieDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             var movieInDb = _context.Movies.SingleOrDefault(m => m.Id == Id);
             if (movieInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            movieInDb.Name = movie.Name;
-            movieInDb.DateAdded = movie.DateAdded;
-            movieInDb.ReleaseDate = movie.ReleaseDate;
-            movieInDb.GenreId = movie.GenreId;
-            movieInDb.NumberInStock = movie.NumberInStock;
+            //Mapper.Map<MovieDto, Movie>(movieDto, movieInDb);
+            //                          sourceobj , traget object
+            // the upper can be 
+            Mapper.Map(movieDto, movieInDb);
             _context.SaveChanges();
-            return movieInDb;
+            return movieDto;
         }
+
         // Delete /api/movies/1
         [HttpDelete]
         public void DeleteMovie(int Id)
